@@ -17,7 +17,8 @@ app.use(bodyParser.json())
 //habilitar carpea public
 app.use(express.static(path.resolve(__dirname, '../public')));
 
-app.use(require('./routes/usuario'));
+// Configuración global de rutas
+app.use(require('./routes/index'));
 
 
 
