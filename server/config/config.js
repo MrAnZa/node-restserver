@@ -36,3 +36,6 @@ if (process.env.NODE_ENV === 'dev') {
     urlDB = process.env.MONGO_URI;
 }
 process.env.URLDB = urlDB;
+
+
+process.env.CLIENT_ID = process.env.CLIENT_ID || '533576536934-c0sqr96qhg52chcocm7u9ed1svfj4p72.apps.googleusercontent.com';
