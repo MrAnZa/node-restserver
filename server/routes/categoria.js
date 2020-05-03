@@ -8,6 +8,8 @@ let Categoria = require('../models/categoria');
 
 app.get('/categoria', (req, res) => {
     Categoria.find({})
+        .sort('description')
+        .populate('usuario', 'nombre email')
         .exec((err, categorias) => {
             if (err) {
                 return res.status(500).json({
