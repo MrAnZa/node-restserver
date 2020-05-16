@@ -34,34 +34,53 @@ app.get('/productos', verificaToken, (req, res) => {
     })
     //Obtener un producto por id
 app.get('/productos/:id', verificaToken, (req, res) => {
-        //populate: usuario categoria
-        //paginado
-        let id = req.params.id;
-        Producto.findById(id)
-            .populate('usuario', 'nombre email')
-            .populate('categoria', 'description')
-            .exec((err, productoDB) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        err
-                    });
-                }
-                if (!productoDB) {
-                    return res.status(400).json({
-                        ok: false,
-                        err: {
-                            message: "ID no existe"
-                        }
-                    });
-                }
-                res.json({
-                    ok: true,
-                    producto: productoDB
+    //populate: usuario categoria
+    //paginado
+    let id = req.params.id;
+    Producto.findById(id)
+        .populate('usuario', 'nombre email')
+        .populate('categoria', 'description')
+        .exec((err, productoDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
                 });
+            }
+            if (!productoDB) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: "ID no existe"
+                    }
+                });
+            }
+            res.json({
+                ok: true,
+                producto: productoDB
+            });
+        })
+})
+
+app.get('/productos/buscar/:termino', verificaToken, (req, res) => {
+    let termino = req.params.termino;
+    let regex = new RegExp(termino, 'i');
+    Producto.find({ nombre: regex })
+        .populate('categoria', 'nombre')
+        .exec((err, productos) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            res.json({
+                ok: true,
+                productos
             })
-    })
-    //Crear un nuevo producto
+        })
+});
+//Crear un nuevo producto
 app.post('/productos', verificaToken, (req, res) => {
     let body = req.body;
     let producto = new Producto({
