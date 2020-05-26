@@ -66,7 +66,27 @@ app.get('/productos/buscar/:termino', verificaToken, (req, res) => {
     let termino = req.params.termino;
     let regex = new RegExp(termino, 'i');
     Producto.find({ nombre: regex })
-        .populate('categoria', 'nombre')
+        //.populate('usuario', 'nombre email')
+        .populate('categoria', 'description')
+        .exec((err, productos) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            res.json({
+                ok: true,
+                productos
+            })
+        })
+});
+//Obtener Productos por Categoria
+app.get('/productos/categoria/:id', verificaToken, (req, res) => {
+    let categoryID = req.params.id;
+    Producto.find({ categoria: categoryID })
+        //.populate('usuario', 'nombre email')
+        //.populate('categoria', 'description')
         .exec((err, productos) => {
             if (err) {
                 return res.status(500).json({
