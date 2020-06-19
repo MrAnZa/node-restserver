@@ -7,3 +7,7 @@ tmp/
 # JPEG
 *.jpg
 *.jpeg
+# Portable Network Graphics
+*.png
+# Graphics Interchange Format
+*.gif

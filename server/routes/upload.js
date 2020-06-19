@@ -16,7 +16,23 @@ app.put('/upload', function(req, res) {
         });
     }
     let archivo = req.files.archivo;
-    archivo.mv('uploads/filename.jpg', (err) => {
+
+    let nombreCortado = archivo.name.split('.');
+    let extension = nombreCortado[nombreCortado.length - 1];
+
+    let extensionesValidas = ['png', 'jpg', 'gif', 'jpeg'];
+
+    if (extensionesValidas.indexOf(extension) < 0) {
+        return res.status(400).json({
+            ok: false,
+            err: {
+                message: 'Las extensiones permitidas son ' + extensionesValidas.join(', '),
+                ext: extension
+            }
+        });
+    }
+
+    archivo.mv(`uploads/${archivo.name}`, (err) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
