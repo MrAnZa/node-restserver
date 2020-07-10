@@ -4,6 +4,8 @@ const fileUpload = require('express-fileupload');
 const app = express();
 
 const Usuario = require('../models/usuario');
+const fs = require('fs');
+const path = require('path');
 
 app.use(fileUpload({ useTempFiles: true }));
 //app.use(fileUpload());
@@ -65,12 +67,14 @@ app.put('/upload/:tipo/:id', function(req, res) {
 function imagenUsuario(id, res, nombreArchivo) {
     Usuario.findById(id, (err, usuarioDB) => {
         if (err) {
+            borraArchivo(nombreArchivo, 'usuarios');
             return res.status(500).json({
                 ok: false,
                 err
             });
         }
         if (!usuarioDB) {
+            borraArchivo(nombreArchivo, 'usuarios');
             return res.status(400).json({
                 ok: false,
                 err: {
@@ -78,6 +82,9 @@ function imagenUsuario(id, res, nombreArchivo) {
                 }
             });
         }
+
+        borraArchivo(usuarioDB.img, 'usuarios');
+
         usuarioDB.img = nombreArchivo;
 
         usuarioDB.save((err, usuarioGuardado) => {
@@ -92,6 +99,13 @@ function imagenUsuario(id, res, nombreArchivo) {
 
 function imagenProducto() {
 
+}
+
+function borraArchivo(nombreImagen, tipo) {
+    let pathImage = path.resolve(__dirname, `../../uploads/${tipo}/${nombreImagen}`);
+    if (fs.existsSync(pathImage)) {
+        fs.unlinkSync(pathImage);
+    }
 }
 
 module.exports = app;
